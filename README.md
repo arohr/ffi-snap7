@@ -1,6 +1,6 @@
-# Ffi::Snap7
+# FFI Snap7
 
-TODO: Write a gem description
+FFI Ruby wrapper for Snap7 (http://snap7.sourceforge.net/)
 
 ## Installation
 
@@ -18,11 +18,52 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+See examples/
+
+Server:
+
+    server = Snap7::Server.new
+    server.register_db 1, 16
+    server.register_db 2, 16
+    server.start
+    puts 'started'
+
+    run = true
+    trap('INT') do
+      puts 'stopping'
+      server.stop
+      run = false
+    end
+
+    while run
+      sleep 0.1
+    end
+    puts 'done'
+
+Startup:
+
+    authbind --deep ./examples/server.rb
+
+
+
+Client:
+
+    client = Snap7::Client.new
+    client.connect '127.0.0.1', 0, 2
+    p client.db_read  1, 0, 4
+    client.db_write 1, 0, 4, [7, 15, 31, 63]
+    p client.db_read  1, 0, 4
+    client.disconnect
+
+Startup:
+
+    ./examples/client.rb
+
+
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/ffi-snap7/fork )
+1. Fork it ( https://github.com/arohr/ffi-snap7/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
