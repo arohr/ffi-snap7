@@ -4,6 +4,12 @@ FFI Ruby wrapper for Snap7 (http://snap7.sourceforge.net/)
 
 ## Installation
 
+Under Ubuntu 14.04 (the environment I tested, but may apply to others as well), perform the following steps:
+
+1. Download and compile Snap7 (see according documentation)
+2. Copy libsnap7.so to /usr/local/lib
+
+
 Add this line to your application's Gemfile:
 
     gem 'ffi-snap7'
@@ -15,6 +21,7 @@ And then execute:
 Or install it yourself as:
 
     $ gem install ffi-snap7
+
 
 ## Usage
 
