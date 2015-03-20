@@ -9,6 +9,6 @@ module Snap7
   typedef :pointer, :s7obj
 end
 
-require 'lib/ffi-snap7/version'
-require 'lib/ffi-snap7/client/client'
-require 'lib/ffi-snap7/server/server'
+require 'ffi-snap7/version'
+require 'ffi-snap7/client/client'
+require 'ffi-snap7/server/server'

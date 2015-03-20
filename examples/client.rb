@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'lib/ffi-snap7'
+require 'rubygems'
+require 'ffi-snap7'
 
   client = Snap7::Client.new
   client.connect '127.0.0.1', 0, 2

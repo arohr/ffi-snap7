@@ -1,4 +1,4 @@
-require 'lib/ffi-snap7/server/wrapper'
+require 'ffi-snap7/server/wrapper'
 
 module Snap7
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'lib/ffi-snap7'
+require 'rubygems'
+require 'ffi-snap7'
 
 server = Snap7::Server.new
 server.register_db 1, 16
