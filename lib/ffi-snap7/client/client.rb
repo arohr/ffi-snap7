@@ -19,6 +19,19 @@ module Snap7
     end
 
 
+    def set_session_password(password)
+      check_rc Snap7.cli_set_session_password(@cli, password)
+    end
+
+
+    def plc_status
+      p_status = FFI::MemoryPointer.new :uchar, 1
+      check_rc Snap7.cli_get_plc_status(@cli, p_status)
+      result = p_status.get_array_of_uint8 0, 1
+      { 0 => 'unknown', 4 => 'stopped', 8 => 'running'}[result.first]
+    end
+
+
     def db_read(db_number, start, size)
       p_usr_data = FFI::MemoryPointer.new :uchar, size
       check_rc Snap7.cli_db_read(@cli, db_number, start, size, p_usr_data)
