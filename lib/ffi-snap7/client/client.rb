@@ -5,17 +5,25 @@ module Snap7
   class Client
 
     def initialize
-      @cli = Snap7.cli_create
+      @cli       = Snap7.cli_create
+      @connected = false
     end
 
 
     def connect(address, rack, slot)
       check_rc Snap7.cli_connect_to(@cli, address, rack, slot)
+      @connected = true
     end
 
 
     def disconnect
       Snap7.cli_disconnect @cli
+      @connected = false
+    end
+
+
+    def connected?
+      @connected
     end
 
 

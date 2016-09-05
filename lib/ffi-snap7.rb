@@ -12,3 +12,4 @@ end
 require 'ffi-snap7/version'
 require 'ffi-snap7/client/client'
 require 'ffi-snap7/server/server'
+require 'ffi-snap7/data_structures/data_structures'
