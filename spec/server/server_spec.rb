@@ -22,11 +22,6 @@ RSpec.describe Snap7::Server do
 
       assert_includes destroyed, srv_ptr
     end
-
-    it 'does not crash Snap7.srv_destroy when not stubbed' do
-      Snap7::Server.new
-      GC.start
-    end
   end
 
 

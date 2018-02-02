@@ -22,11 +22,6 @@ RSpec.describe Snap7::Client do
 
       assert_includes destroyed, cli_ptr
     end
-
-    it 'does not crash Snap7.cli_destroy when not stubbed' do
-      Snap7::Client.new
-      GC.start
-    end
   end
 
 
