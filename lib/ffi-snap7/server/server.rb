@@ -12,8 +12,28 @@ module Snap7
     S7AreaDB = 5
 
 
+    # @return [Proc]
+    # @see http://www.mikeperham.com/2010/02/24/the-trouble-with-ruby-finalizers/
+    #
+    def self.finalizer(ptr)
+      proc do
+        ptrptr = FFI::MemoryPointer.new :pointer
+        ptrptr.write_pointer ptr
+        Snap7.srv_destroy ptrptr
+      end
+    end
+
+
     def initialize
       @srv = Snap7.srv_create
+
+      ObjectSpace.define_finalizer self, self.class.finalizer(@srv)
+    end
+
+
+    # @return [FFI::MemoryPointer] pointer to the native object
+    def to_ptr
+      @srv
     end
 
 

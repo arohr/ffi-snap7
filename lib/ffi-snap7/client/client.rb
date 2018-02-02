@@ -4,9 +4,29 @@ module Snap7
 
   class Client
 
+    # @return [Proc]
+    # @see http://www.mikeperham.com/2010/02/24/the-trouble-with-ruby-finalizers/
+    #
+    def self.finalizer(ptr)
+      proc do
+        ptrptr = FFI::MemoryPointer.new :pointer
+        ptrptr.write_pointer ptr
+        Snap7.cli_destroy ptrptr
+      end
+    end
+
+
     def initialize
       @cli       = Snap7.cli_create
       @connected = false
+
+      ObjectSpace.define_finalizer self, self.class.finalizer(@cli)
+    end
+
+
+    # @return [FFI::MemoryPointer] pointer to the native object
+    def to_ptr
+      @cli
     end
 
 

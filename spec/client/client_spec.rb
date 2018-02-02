@@ -4,10 +4,31 @@ RSpec.describe Snap7::Client do
     subject
   end
 
-  it 'creates native object' do
-    expect(Snap7).to receive(:cli_create) { FFI::MemoryPointer.new :pointer }
-    subject
+
+  describe 'native object' do
+    it 'is created' do
+      # NOTE: Calling original is important, otherwise the next GC will SEGV!
+      expect(Snap7).to receive(:cli_create).and_call_original
+      subject
+    end
+
+    it 'is destroyed' do
+      GC.start # minimize garbage objects
+      destroyed = []
+      allow(Snap7).to receive(:cli_destroy) { |ptrptr| destroyed << ptrptr.read_pointer }
+
+      cli_ptr = Snap7::Client.new.to_ptr # no ref to Snap7::Client object is kept
+      GC.start; GC.start # second call is often necessary
+
+      assert_includes destroyed, cli_ptr
+    end
+
+    it 'does not crash Snap7.cli_destroy when not stubbed' do
+      Snap7::Client.new
+      GC.start
+    end
   end
+
 
   describe '#connected?' do
     it 'initializes disconnected' do
@@ -46,6 +67,7 @@ RSpec.describe Snap7::Client do
       end
     end
   end
+
 
   describe '#disconnect' do
     it 'disconnects' do

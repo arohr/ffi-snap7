@@ -3,8 +3,8 @@ module Snap7
   # EXPORTSPEC S7Object S7API Cli_Create();
   attach_function :cli_create, :Cli_Create, [], :s7obj
 
-  # EXPORTSPEC void S7API Cli_Destroy(S7Object &Client);
-  # attach_function :cli_destroy, :Cli_Destroy, [:s7obj], :void # FIXME crashes MRI
+  # EXPORTSPEC void S7API Cli_Destroy(S7Object **Client);
+  attach_function :cli_destroy, :Cli_Destroy, [:s7obj], :void
 
   # EXPORTSPEC int S7API Cli_SetSessionPassword(S7Object Client, char *Password);
   attach_function :cli_set_session_password, :Cli_SetSessionPassword, [:s7obj, :string], :int

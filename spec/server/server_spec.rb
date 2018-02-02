@@ -4,10 +4,31 @@ RSpec.describe Snap7::Server do
     subject
   end
 
-  it 'creates native object' do
-    expect(Snap7).to receive(:srv_create) { FFI::MemoryPointer.new :pointer }
-    subject
+
+  describe 'native object' do
+    it 'is created' do
+      # NOTE: Calling original is important, otherwise the next GC will SEGV!
+      expect(Snap7).to receive(:srv_create).and_call_original
+      subject
+    end
+
+    it 'is destroyed' do
+      GC.start # minimize garbage objects
+      destroyed = []
+      allow(Snap7).to receive(:srv_destroy) { |ptrptr| destroyed << ptrptr.read_pointer }
+
+      srv_ptr = Snap7::Server.new.to_ptr # no ref to Snap7::Server object is kept
+      GC.start; GC.start # second call is often necessary
+
+      assert_includes destroyed, srv_ptr
+    end
+
+    it 'does not crash Snap7.srv_destroy when not stubbed' do
+      Snap7::Server.new
+      GC.start
+    end
   end
+
 
   describe '#start' do
     it 'binds to default port' do
@@ -29,6 +50,7 @@ RSpec.describe Snap7::Server do
     end
   end
 
+
   describe '#stop' do
     it 'stops' do
       expect(Snap7).to receive(:srv_stop) { 0 }
@@ -45,4 +67,3 @@ RSpec.describe Snap7::Server do
     end
   end
 end
-
