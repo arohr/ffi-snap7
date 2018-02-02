@@ -64,7 +64,7 @@ module Snap7
 
     def error_text(error)
       text_len = 1024
-      text_ptr = FFI::MemoryPointer.new :pointer, text_len
+      text_ptr = FFI::MemoryPointer.new :char, text_len
       if Snap7.cli_error_text(error, text_ptr, text_len) == 0
         text_ptr.read_string
       else
