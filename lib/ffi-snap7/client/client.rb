@@ -54,6 +54,22 @@ module Snap7
     end
 
 
+    # @param port [Integer] remote port to connect to
+    def remote_port=(port)
+      p_value = FFI::MemoryPointer.new(:uint16)
+      p_value.write_uint16 port
+      check_rc Snap7.cli_set_param(@cli, P_u16_RemotePort, p_value)
+    end
+
+
+    # @return [Integer]
+    def remote_port
+      p_port = FFI::MemoryPointer.new(:uint16)
+      check_rc Snap7.cli_get_param(@cli, P_u16_RemotePort, p_port)
+      p_port.read_uint16
+    end
+
+
     private
 
 

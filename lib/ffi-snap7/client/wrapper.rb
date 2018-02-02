@@ -27,6 +27,10 @@ module Snap7
   # EXPORTSPEC int S7API Cli_ErrorText(int Error, char *Text, int TextLen);
   attach_function :cli_error_text, :Cli_ErrorText, [:int, :pointer, :int], :int
 
+  # EXPORTSPEC int S7API Cli_GetParam(S7Object Client, int ParamNumber, void *pValue);
+  attach_function :cli_get_param, :Cli_GetParam, [:s7obj, :int, :pointer], :int
 
+  # EXPORTSPEC int S7API Cli_SetParam(S7Object Client, int ParamNumber, void *pValue);
+  attach_function :cli_set_param, :Cli_SetParam, [:s7obj, :int, :pointer], :int
 
 end

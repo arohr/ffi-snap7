@@ -35,5 +35,14 @@ RSpec.describe Snap7::Server do
       subject.stop
     end
   end
+
+
+  describe '#local_port' do
+    it 'sets local port' do
+      assert_equal  102, subject.local_port
+      subject.local_port = 2102
+      assert_equal 2102, subject.local_port
+    end
+  end
 end
 

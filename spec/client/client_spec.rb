@@ -63,4 +63,13 @@ RSpec.describe Snap7::Client do
       refute subject.connected?
     end
   end
+
+
+  describe '#remote_port' do
+    it 'sets remote port' do
+      assert_equal  102, subject.remote_port
+      subject.remote_port = 2102
+      assert_equal 2102, subject.remote_port
+    end
+  end
 end

@@ -38,6 +38,22 @@ module Snap7
     end
 
 
+    # @param port [Integer] local port to bind to
+    def local_port=(port)
+      p_port = FFI::MemoryPointer.new(:uint16)
+      p_port.write_uint16 port
+      check_rc Snap7.srv_set_param(@srv, P_u16_LocalPort, p_port)
+    end
+
+
+    # @return [Integer]
+    def local_port
+      p_port = FFI::MemoryPointer.new(:uint16)
+      check_rc Snap7.srv_get_param(@srv, P_u16_LocalPort, p_port)
+      p_port.read_uint16
+    end
+
+
     private
 
 
