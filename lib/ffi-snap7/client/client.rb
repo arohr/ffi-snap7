@@ -4,9 +4,29 @@ module Snap7
 
   class Client
 
+    # @return [Proc]
+    # @see http://www.mikeperham.com/2010/02/24/the-trouble-with-ruby-finalizers/
+    #
+    def self.finalizer(ptr)
+      proc do
+        ptrptr = FFI::MemoryPointer.new :pointer
+        ptrptr.write_pointer ptr
+        Snap7.cli_destroy ptrptr
+      end
+    end
+
+
     def initialize
       @cli       = Snap7.cli_create
       @connected = false
+
+      ObjectSpace.define_finalizer self, self.class.finalizer(@cli)
+    end
+
+
+    # @return [FFI::MemoryPointer] pointer to the native object
+    def to_ptr
+      @cli
     end
 
 
@@ -54,6 +74,22 @@ module Snap7
     end
 
 
+    # @param port [Integer] remote port to connect to
+    def remote_port=(port)
+      p_value = FFI::MemoryPointer.new(:uint16)
+      p_value.write_uint16 port
+      check_rc Snap7.cli_set_param(@cli, P_u16_RemotePort, p_value)
+    end
+
+
+    # @return [Integer]
+    def remote_port
+      p_port = FFI::MemoryPointer.new(:uint16)
+      check_rc Snap7.cli_get_param(@cli, P_u16_RemotePort, p_port)
+      p_port.read_uint16
+    end
+
+
     private
 
 
@@ -64,7 +100,7 @@ module Snap7
 
     def error_text(error)
       text_len = 1024
-      text_ptr = FFI::MemoryPointer.new :pointer, text_len
+      text_ptr = FFI::MemoryPointer.new :char, text_len
       if Snap7.cli_error_text(error, text_ptr, text_len) == 0
         text_ptr.read_string
       else

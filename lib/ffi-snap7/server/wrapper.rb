@@ -6,13 +6,14 @@ module Snap7
   # EXPORTSPEC S7Object S7API Srv_Create();
   attach_function :srv_create, :Srv_Create, [], :s7obj
 
-  # EXPORTSPEC void S7API Srv_Destroy(S7Object &Server);
-  # FIXME crashes MRI
-  # attach_function :srv_destroy, :Srv_Destroy, [:s7obj], :void
+  # EXPORTSPEC void S7API Srv_Destroy(S7Object **Server);
+  attach_function :srv_destroy, :Srv_Destroy, [:s7obj], :void
 
   # EXPORTSPEC int S7API Srv_GetParam(S7Object Server, int ParamNumber, void *pValue);
+  attach_function :srv_get_param, :Srv_GetParam, [:s7obj, :int, :pointer], :int
 
   # EXPORTSPEC int S7API Srv_SetParam(S7Object Server, int ParamNumber, void *pValue);
+  attach_function :srv_set_param, :Srv_SetParam, [:s7obj, :int, :pointer], :int
 
   # EXPORTSPEC int S7API Srv_Start(S7Object Server);
   attach_function :srv_start, :Srv_Start, [:s7obj], :int

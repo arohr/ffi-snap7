@@ -12,8 +12,28 @@ module Snap7
     S7AreaDB = 5
 
 
+    # @return [Proc]
+    # @see http://www.mikeperham.com/2010/02/24/the-trouble-with-ruby-finalizers/
+    #
+    def self.finalizer(ptr)
+      proc do
+        ptrptr = FFI::MemoryPointer.new :pointer
+        ptrptr.write_pointer ptr
+        Snap7.srv_destroy ptrptr
+      end
+    end
+
+
     def initialize
       @srv = Snap7.srv_create
+
+      ObjectSpace.define_finalizer self, self.class.finalizer(@srv)
+    end
+
+
+    # @return [FFI::MemoryPointer] pointer to the native object
+    def to_ptr
+      @srv
     end
 
 
@@ -38,6 +58,22 @@ module Snap7
     end
 
 
+    # @param port [Integer] local port to bind to
+    def local_port=(port)
+      p_port = FFI::MemoryPointer.new(:uint16)
+      p_port.write_uint16 port
+      check_rc Snap7.srv_set_param(@srv, P_u16_LocalPort, p_port)
+    end
+
+
+    # @return [Integer]
+    def local_port
+      p_port = FFI::MemoryPointer.new(:uint16)
+      check_rc Snap7.srv_get_param(@srv, P_u16_LocalPort, p_port)
+      p_port.read_uint16
+    end
+
+
     private
 
 
@@ -48,7 +84,7 @@ module Snap7
 
     def error_text(error)
       text_len = 1024
-      text_ptr = FFI::MemoryPointer.new :pointer, text_len
+      text_ptr = FFI::MemoryPointer.new :char, text_len
       if Snap7.srv_error_text(error, text_ptr, text_len) == 0
         text_ptr.read_string
       else
